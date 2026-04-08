@@ -1,0 +1,108 @@
+Product Requirements Document (PRD)
+Product: DPDP Compliance Automation Platform (Codename: SUSAN-like)
+Document Version: 1.0 (Expanded)
+Date: April 2026
+1. Executive Summary & Product Vision
+1.1 Overview
+The DPDP Compliance Automation Platform is a B2B SaaS regulatory intelligence system. It transitions organizations from manual, spreadsheet-based data governance to an automated, continuous compliance model. It is specifically designed to enforce the mandates of India’s Digital Personal Data Protection (DPDP) Act, 2023, while maintaining extensibility for global frameworks (GDPR, CCPA).
+1.2 Core Problem
+Organizations currently face fragmented data ecosystems. Personal Identifiable Information (PII) is scattered across databases, SaaS tools, and logs. Managing consent, responding to Data Subject Access Requests (DSARs), and auditing data flows manually is legally risky, slow, and expensive.
+1.3 Vision
+To provide a unified, "single pane of glass" platform that automates data mapping, enforces privacy by design, and eliminates the risk of regulatory penalties through proactive intelligence.
+2. Target Audience & Personas
+2.1 Primary Users
+Data Protection Officer (DPO): Needs a bird's-eye view of organizational compliance, risk scores, and the ability to generate audit-ready reports instantly.
+Legal & Compliance Heads: Focuses on cross-border data flow contracts, breach notification timelines, and tracking legislative updates.
+2.2 Secondary Users
+IT Security / DevOps Teams: Responsible for integrating the platform with internal databases (PostgreSQL, MongoDB) and configuring IAM/SSO. Needs clear API documentation and low-latency agent performance.
+Founders / CXOs: Needs executive dashboards showing risk exposure and compliance status (Red/Yellow/Green).
+3. Functional Requirements (Epics & Features)
+Epic 1: Data Discovery & Classification Engine
+Data Source Connectors: Plug-and-play integrations via OAuth or service accounts for AWS RDS, GCP BigQuery, Salesforce, HubSpot, and Stripe.
+Automated PII Scanning: Scheduled and triggered scans using Regex and NLP to identify PII (Aadhaar, PAN, phone numbers, emails).
+Data Inventory (RoPA): Automatically maintain a Record of Processing Activities, mapping what data is held, where it resides, and why it is processed.
+Epic 2: Consent Management System (CMS)
+Consent Gateway: Embeddable SDK/widgets for client frontends to capture granular, purpose-bound consent.
+Consent Lifecycle Tracking: Immutable logging of when consent is granted, modified, or withdrawn.
+Propagated Revocation: If a user withdraws consent, the system automatically flags or triggers webhooks to downstream systems to halt processing.
+Epic 3: DSAR (Data Subject Access Request) Automation
+User Portal: A secure, white-labeled portal where end-users can submit access, correction, or erasure requests.
+Identity Verification: Automated OTP/Email loop to verify the identity of the requester.
+Workflow Automation: * Gathering: Automatically query connected databases for the user's data.
+Redaction: AI-assisted redaction of third-party PII before exporting.
+SLA Tracking: Countdown timers to ensure fulfillment within the legally mandated timeframe (e.g., 72 hours).
+Epic 4: Security, Breach Management & Cross-Border
+Incident Logging Workflow: Forms to log breaches with metadata (time, scope, affected users).
+Regulatory Notification Generator: Auto-generates the required notification drafts for the Data Protection Board (DPB) and affected individuals based on severity.
+Data Flow Mapping: Visual geographic mapping of data storage locations to ensure compliance with data localization rules.
+4. Non-Functional Requirements (NFRs)
+Performance: Dashboard API response times must be < 500ms. Data scanning engines must handle up to 1TB/hour without impacting client production DB performance (read-replicas preferred).
+Scalability: Multi-tenant architecture with strict logical data isolation. Must scale horizontally to support 10,000+ enterprise clients.
+Security & Privacy:
+Zero-knowledge architecture for client PII where possible.
+AES-256 encryption at rest, TLS 1.3 in transit.
+Platform must be SOC2 Type II and ISO 27001 compliant.
+Strict Role-Based Access Control (RBAC) and MFA enforcement for all user logins.
+Reliability: 99.99% uptime SLA. Multi-AZ database deployments with automated daily backups and point-in-time recovery.
+5. System Architecture & Data Flow
+5.1 High-Level Architecture
+Frontend: React/Next.js SPA.
+API Gateway: Routes external SDK traffic, client portal traffic, and internal dashboard traffic.
+Microservices:
+Auth & Tenant Service
+Scanner & Integration Service (Worker nodes for heavy lifting)
+Consent & DSAR Service
+Reporting & Risk Service
+Message Broker: Apache Kafka or AWS SQS for asynchronous task processing (e.g., queuing database scans, triggering webhooks).
+5.2 Core Data Flow (Consent to Breach)
+User Opt-in -> Consent API -> Operational DB -> Message Queue -> Downstream CRM updated -> Periodic DB Scan verifies sync -> Risk Engine evaluates compliance.
+6. Database Schema Strategy
+6.1 Operational DB (PostgreSQL - Multi-tenant)
+tenants: id, company_name, industry, created_at.
+users (Admins/DPOs): id, tenant_id, role, email, password_hash.
+data_sources: id, tenant_id, type (postgres, salesforce), credentials (encrypted), status.
+consents: id, tenant_id, end_user_id, data_point, purpose, status (active/withdrawn), timestamp.
+dsar_requests: id, tenant_id, end_user_id, type (delete, export), status (pending, verified, fulfilled, rejected), due_date.
+6.2 Audit Log Store (Elasticsearch / AWS QLDB)
+audit_logs: Append-only. Fields: timestamp, actor_id, action (e.g., "Exported DSAR", "Modified Connection"), ip_address.
+7. Compliance Logic & Decision Engine
+7.1 Risk Scoring Algorithm
+Risk Score (0-100) = (Unmapped Data Volume * 0.3) + (Expired Consents * 0.4) + (Overdue DSARs * 0.2) + (Cross-Border Violations * 0.1)
+0-30: Low Risk (Green)
+31-70: At Risk (Yellow)
+71-100: Critical (Red - Immediate Action Required)
+7.2 Decision Matrix
+8. API Design (RESTful)
+POST /api/v1/auth/login - Bearer token generation.
+POST /api/v1/consent/record - Ingests consent proof from client frontends.
+GET /api/v1/consent/verify/{user_id} - Checks if user has given consent for specific processing.
+POST /api/v1/dsar/submit - Opens a new user request.
+GET /api/v1/dashboard/risk-metrics - Returns aggregate scores for the frontend.
+9. AI & Machine Learning Layer
+Classification: Named Entity Recognition (NER) models to scan unstructured data (e.g., customer support chat logs) and tag hidden PII.
+Predictive Analytics: Historical trend analysis to predict potential SLA breaches before they happen (e.g., "Based on current volume, you will miss 4 DSAR deadlines next week").
+Natural Language Query (NLQ): DPO Copilot.
+User prompt: "Show me all active data sources holding Aadhaar numbers without explicit consent."
+AI Action: Translates to SQL/GraphQL, fetches data, visualizes results.
+10. Roadmap & Rollout
+Phase 1: Foundation (Months 1-2) - RBAC, Data Source Connectors (Postgres/MySQL only), Basic Scanning, Manual ROPA generation.
+Phase 2: User Rights (Months 3-4) - Consent Gateway API, DSAR Portal, Identity Verification workflows.
+Phase 3: Intelligence (Months 5-6) - Risk Scoring Engine, SaaS Integrations (Salesforce, HubSpot), Automated Webhooks.
+Phase 4: Advanced AI (Months 7+) - NLP unstructured data scanning, DPO Chatbot, Cross-border mapping visualization.
+
+Condition
+Trigger
+System Action
+Output Status
+Missing Consent
+Data found without valid log
+Alert DPO, Block API sync
+NON-COMPLIANT
+DSAR SLA Breach
+Request > 72 hours old
+Escalate to CXO via email
+AT RISK
+Active Breach
+Admin flags incident
+Lock affected records
+CRITICAL

@@ -1,0 +1,97 @@
+﻿git : remote: error: 
+GH013: Repository rule 
+violations found for refs/
+heads/add-regtech-platform
+.        
+At line:1 char:1
++ git push origin 
+add-regtech-platform 2>&1 
+| Out-File -Encoding utf8 
+p ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (r  
+  emote: error: ...atfo   
+ rm.        :String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+remote: 
+remote: - GITHUB PUSH 
+PROTECTION        
+remote:   ΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇö        
+remote:     Resolve the 
+following violations 
+before pushing again      
+  
+remote: 
+remote:     - Push cannot 
+contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn 
+how to resolve a blocked 
+push        
+remote:      https://docs.
+github.com/code-security/s
+ecret-scanning/working-wit
+h-secret-scanning-and-push
+-protection/working-with-p
+ush-protection-from-the-co
+mmand-line#resolving-a-blo
+cked-push        
+remote:             
+remote:             
+remote:       ΓÇöΓÇö 
+Stripe API Key ΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓ
+ÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö
+ΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇöΓÇ
+öΓÇöΓÇöΓÇöΓÇöΓÇöΓÇö       
+ 
+remote:        locations: 
+       
+remote:          - 
+commit: cc0971c8284d763e48
+63aa770aa16f03ea47a5a8    
+    
+remote:            path: 
+Regtech platform/dpo-dashb
+oard/src/pages/Settings.ts
+x:206        
+remote:             
+remote:        (?) To 
+push, remove secret from 
+commit(s) or follow this 
+URL to allow the secret.  
+      
+remote:        https://git
+hub.com/Parth2004124/Finte
+ch-SOLUTIONS/security/secr
+et-scanning/unblock-secret
+/3C4WQU0x4WbXG6MIeDynh7NrW
+Ca        
+remote:             
+remote: 
+remote: 
+To https://github.com/Part
+h2004124/Fintech-SOLUTIONS
+.git
+ ! [remote rejected] 
+add-regtech-platform -> 
+add-regtech-platform 
+(push declined due to 
+repository rule 
+violations)
+error: failed to push 
+some refs to 'https://gith
+ub.com/Parth2004124/Fintec
+h-SOLUTIONS.git'
